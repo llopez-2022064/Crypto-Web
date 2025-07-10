@@ -1,8 +1,30 @@
 import { useState } from 'react'
 import './App.css'
+import { useCrypto } from './hooks/useCrypto'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [text, setText] = useState('')
+  const [result, setResult] = useState('')
+  const { crypto, decrypt, isLoading} = useCrypto()
+
+  const handleChange = (e) => {
+    setText(e.target.value)
+  }
+
+  const handleEncrypt = async(e) => {
+    e.preventDefault()
+
+    const res = await crypto(text)
+    console.log('Resultado desde app.jsx: ', res)
+    if(res) setResult(res.result)
+  }
+
+  const handleDescrypt = async(e) =>{
+    e.preventDefault()
+
+    const res = await decrypt(text)
+    if(res) setResult(res.result)
+  }
 
   return (
     <>
@@ -19,7 +41,7 @@ function App() {
                 <div className='absolute inset-y-0 ps-3 start-0 flex items-center'>
                   <svg className='size-6' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-lock-open"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M5 11m0 2a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2z" /><path d="M12 16m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M8 11v-5a4 4 0 0 1 8 0" /></svg>
                 </div>
-                <input className='w-full ps-12 py-2.5 rounded-xl bg-gray-300 focus:ring-blue-500 focus:border-blue-500' type="text" id='password' placeholder='************' required />
+                <input value={text} onChange={handleChange} className='w-full ps-12 py-2.5 rounded-xl bg-gray-300 focus:ring-blue-500 focus:border-blue-500' type="text" id='password' placeholder='************' required />
               </div>
             </div>
 
@@ -29,13 +51,13 @@ function App() {
                 <div className='absolute inset-y-0 start-0 ps-3 flex items-center'>
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-lock"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M5 13a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-6z" /><path d="M11 16a1 1 0 1 0 2 0a1 1 0 0 0 -2 0" /><path d="M8 11v-4a4 4 0 1 1 8 0v4" /></svg>
                 </div>
-                <input className='w-full ps-12 py-2.5 rounded-xl bg-gray-300' disabled type="text" />
+                <input id='result' value={isLoading ? 'Loading...' : result} className='w-full ps-12 py-2.5 rounded-xl bg-gray-300' disabled type="text" />
               </div>
             </div>
           </div>
           <div className='flex justify-around'>
-            <button className='px-5 py-2.5 rounded-lg lg:px-14 bg-blue-600 text-xl font-semibold cursor-pointer'>Encrypt</button>
-            <button className='px-5 py-2.5 rounded-lg lg:px-14 bg-blue-300 text-xl font-semibold cursor-pointer'>Decrypt</button>
+            <button onClick={handleEncrypt} className='px-5 py-2.5 rounded-lg lg:px-14 bg-blue-600 text-xl font-semibold cursor-pointer'>Encrypt</button>
+            <button onClick={handleDescrypt} className='px-5 py-2.5 rounded-lg lg:px-14 bg-blue-300 text-xl font-semibold cursor-pointer'>Decrypt</button>
           </div>
         </div>
       </div>
