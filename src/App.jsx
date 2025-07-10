@@ -5,25 +5,33 @@ import { useCrypto } from './hooks/useCrypto'
 function App() {
   const [text, setText] = useState('')
   const [result, setResult] = useState('')
-  const { crypto, decrypt, isLoading} = useCrypto()
+  const [copied, setCopied] = useState(false)
+  const { crypto, decrypt, isLoading } = useCrypto()
+
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(result)
+    setCopied(true)
+
+    setTimeout(() => setCopied(false), 2000)
+  }
 
   const handleChange = (e) => {
     setText(e.target.value)
   }
 
-  const handleEncrypt = async(e) => {
+  const handleEncrypt = async (e) => {
     e.preventDefault()
 
     const res = await crypto(text)
     console.log('Resultado desde app.jsx: ', res)
-    if(res) setResult(res.result)
+    if (res) setResult(res.result)
   }
 
-  const handleDescrypt = async(e) =>{
+  const handleDescrypt = async (e) => {
     e.preventDefault()
 
     const res = await decrypt(text)
-    if(res) setResult(res.result)
+    if (res) setResult(res.result)
   }
 
   return (
@@ -51,13 +59,17 @@ function App() {
                 <div className='absolute inset-y-0 start-0 ps-3 flex items-center'>
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-lock"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M5 13a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-6z" /><path d="M11 16a1 1 0 1 0 2 0a1 1 0 0 0 -2 0" /><path d="M8 11v-4a4 4 0 1 1 8 0v4" /></svg>
                 </div>
+                <button className='absolute inset-y-0 end-0 pe-3 flex items-center cursor-pointer' onClick={handleCopy}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-copy"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7m0 2.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z" /><path d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" /></svg>
+                </button>
                 <input id='result' value={isLoading ? 'Loading...' : result} className='w-full ps-12 py-2.5 rounded-xl bg-gray-300' disabled type="text" />
               </div>
             </div>
           </div>
           <div className='flex justify-around'>
-            <button onClick={handleEncrypt} className='px-5 py-2.5 rounded-lg lg:px-14 bg-blue-600 text-xl font-semibold cursor-pointer'>Encrypt</button>
-            <button onClick={handleDescrypt} className='px-5 py-2.5 rounded-lg lg:px-14 bg-blue-300 text-xl font-semibold cursor-pointer'>Decrypt</button>
+            <button onClick={handleEncrypt} type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Encrypt</button>
+            <button onClick={handleDescrypt} type="button" class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">Decrypt</button>
+            <button onClick={() => { setResult(''); setText('') }} type="button" class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">Clear</button>
           </div>
         </div>
       </div>
