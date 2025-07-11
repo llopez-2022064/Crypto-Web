@@ -8,6 +8,7 @@ Esta app te permite cifrar y descifrar mensajes fácilmente usando algoritmos se
 - CSS
 - Vite
 - Tailwind CSS
+- JavaScript
 
 ## ⚠️ Nota
 
