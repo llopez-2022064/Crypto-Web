@@ -2,7 +2,7 @@ import axios from "axios";
 
 const apiCrypto = axios.create({
     baseURL: 'https://crypto-api-production-cf04.up.railway.app/api/v1/crypto',
-    timeout: 10000
+    timeout: 15000
 })
 
 export const encryptRequest = async(text) => {
